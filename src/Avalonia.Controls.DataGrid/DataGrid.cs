@@ -32,6 +32,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Styling;
 using Avalonia.Reactive;
+using Avalonia.Metadata;
 
 namespace Avalonia.Controls
 {
@@ -1371,14 +1372,29 @@ namespace Avalonia.Controls
         /// <summary>
         /// Gets a collection that contains all the columns in the control.
         /// </summary>
+        //public ObservableCollection<DataGridColumn> Columns
+        //{
+        //    get
+        //    {
+        //        // we use a backing field here because the field's type
+        //        // is a subclass of the property's
+        //        return ColumnsInternal;
+        //    }
+        //}
+
+        public static readonly DirectProperty<DataGrid, ObservableCollection<DataGridColumn>> ColumnsProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, ObservableCollection<DataGridColumn>>(nameof(Columns), o => o.Columns);
+
+        /// <summary>
+        /// Gets a value that indicates whether the data in a row is valid.
+        /// </summary>
+        /// 
+        ObservableCollection<DataGridColumn> _DummyColumn;
+        [Content]
         public ObservableCollection<DataGridColumn> Columns
         {
-            get
-            {
-                // we use a backing field here because the field's type
-                // is a subclass of the property's
-                return ColumnsInternal;
-            }
+            get { return ColumnsInternal; }
+            set { SetAndRaise(ColumnsProperty, ref _DummyColumn, value); }
         }
 
         /// <summary>
@@ -1454,9 +1470,11 @@ namespace Avalonia.Controls
             get { return _selectedItems as IList; }
         }
 
+        private DataGridColumnCollection _ColumnsInternal;
         internal DataGridColumnCollection ColumnsInternal
         {
-            get;
+            get { return _ColumnsInternal; }
+            private set { _ColumnsInternal = value; }
         }
 
         internal int AnchorSlot
