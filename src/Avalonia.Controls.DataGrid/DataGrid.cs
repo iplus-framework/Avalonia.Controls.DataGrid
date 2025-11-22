@@ -1369,32 +1369,10 @@ namespace Avalonia.Controls
         /// </summary>
         public event EventHandler<DataGridRowDetailsEventArgs> UnloadingRowDetails;
 
-        /// <summary>
-        /// Gets a collection that contains all the columns in the control.
-        /// </summary>
-        //public ObservableCollection<DataGridColumn> Columns
-        //{
-        //    get
-        //    {
-        //        // we use a backing field here because the field's type
-        //        // is a subclass of the property's
-        //        return ColumnsInternal;
-        //    }
-        //}
-
-        public static readonly DirectProperty<DataGrid, ObservableCollection<DataGridColumn>> ColumnsProperty =
-        AvaloniaProperty.RegisterDirect<DataGrid, ObservableCollection<DataGridColumn>>(nameof(Columns), o => o.Columns);
-
-        /// <summary>
-        /// Gets a value that indicates whether the data in a row is valid.
-        /// </summary>
-        /// 
-        ObservableCollection<DataGridColumn> _DummyColumn;
-        [Content]
+        //[Content]
         public ObservableCollection<DataGridColumn> Columns
         {
             get { return ColumnsInternal; }
-            set { SetAndRaise(ColumnsProperty, ref _DummyColumn, value); }
         }
 
         /// <summary>
