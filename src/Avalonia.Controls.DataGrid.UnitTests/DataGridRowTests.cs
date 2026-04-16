@@ -28,7 +28,7 @@ public class DataGridRowTests
         var rows = GetRows(target);
 
         Assert.Equal(0, GetFirstRealizedRowIndex(target));
-        Assert.Equal(4, GetLastRealizedRowIndex(target));
+        Assert.Equal(3, GetLastRealizedRowIndex(target));
         Assert.All(rows, x => Assert.Equal(x.Index == 2, x.IsSelected));
     }
 
@@ -42,12 +42,12 @@ public class DataGridRowTests
         var rows = GetRows(target);
 
         Assert.Equal(0, GetFirstRealizedRowIndex(target));
-        Assert.Equal(4, GetLastRealizedRowIndex(target));
+        Assert.Equal(3, GetLastRealizedRowIndex(target));
 
         target.ScrollIntoView(items[10], target.Columns[0]);
         target.UpdateLayout();
 
-        Assert.Equal(6, GetFirstRealizedRowIndex(target));
+        Assert.Equal(7, GetFirstRealizedRowIndex(target));
         Assert.Equal(10, GetLastRealizedRowIndex(target));
 
         Assert.All(rows, x => Assert.Equal(x.Index == 10, x.IsSelected));
@@ -63,7 +63,7 @@ public class DataGridRowTests
         var rows = GetRows(target);
 
         Assert.Equal(0, GetFirstRealizedRowIndex(target));
-        Assert.Equal(4, GetLastRealizedRowIndex(target));
+        Assert.Equal(3, GetLastRealizedRowIndex(target));
         Assert.All(rows, x => Assert.Equal(x.Index == 2, x.IsSelected));
 
         items[2].IsSelected = false;
@@ -81,7 +81,7 @@ public class DataGridRowTests
         var rows = GetRows(target);
 
         Assert.Equal(0, GetFirstRealizedRowIndex(target));
-        Assert.Equal(4, GetLastRealizedRowIndex(target));
+        Assert.Equal(3, GetLastRealizedRowIndex(target));
         Assert.All(rows, x => Assert.Equal(x.Index == 2, x.IsSelected));
 
         target.SelectedItems.Remove(items[2]);
@@ -159,7 +159,7 @@ public class DataGridRowTests
     {
         return new Style(x => x.OfType<DataGridRow>())
         {
-            Setters = { new Setter(DataGridRow.IsSelectedProperty, new Binding("IsSelected", BindingMode.TwoWay)) }
+            Setters = { new Setter(DataGridRow.IsSelectedProperty, new ReflectionBinding("IsSelected") { Mode = BindingMode.TwoWay }) }
         };
     }
 
@@ -167,7 +167,7 @@ public class DataGridRowTests
     {
         return new Style(x => x.OfType<DataGridRow>())
         {
-            Setters = { new Setter(DataGridRow.HeaderProperty, new Binding("Name", BindingMode.OneWay))} 
+            Setters = { new Setter(DataGridRow.HeaderProperty, new ReflectionBinding("Name") { Mode = BindingMode.OneWay })}
         };
     }
 

@@ -11,8 +11,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 using System;
-using System.Diagnostics;
-using Avalonia.Reactive;
+using Avalonia.Controls.Utils;
+using Avalonia.LogicalTree;
 
 namespace Avalonia.Controls
 {
@@ -148,8 +148,7 @@ namespace Avalonia.Controls
         {
             get
             {
-                Debug.Assert(OwningGrid != null);
-                return (RowGroupInfo.Slot == OwningGrid.CurrentSlot);
+                return RowGroupInfo.Slot == OwningGrid?.CurrentSlot;
             }
         }
 
@@ -472,5 +471,11 @@ namespace Avalonia.Controls
             }
         }
 
+        protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromLogicalTree(e);
+            OwningGrid.RemoveReferenceFromCollectionViewGroup(RowGroupInfo.CollectionViewGroup);
+            OwningGrid = null;
+        }
     }
 }

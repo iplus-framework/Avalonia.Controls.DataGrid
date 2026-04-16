@@ -88,9 +88,6 @@ namespace Avalonia.Controls
         private const double DATAGRID_defaultMinColumnWidth = 20;
         private const double DATAGRID_defaultMaxColumnWidth = double.PositiveInfinity;
 
-        private List<Exception> _bindingValidationErrors;
-        private IDisposable _validationSubscription;
-
         private INotifyCollectionChanged _topLevelGroup;
         private ContentControl _clipboardContentControl;
 
@@ -782,7 +779,6 @@ namespace Avalonia.Controls
             _lostFocusActions = new Queue<Action>();
             _selectedItems = new DataGridSelectedItemsCollection(this);
             RowGroupHeadersTable = new IndexToValueTable<DataGridRowGroupInfo>();
-            _bindingValidationErrors = new List<Exception>();
 
             DisplayData = new DataGridDisplayData(this);
             ColumnsInternal = CreateColumnsInstance();
@@ -2236,22 +2232,6 @@ namespace Avalonia.Controls
             return desiredSize;
         }
 
-        /// <inheritdoc/>
-        protected override void OnDataContextBeginUpdate()
-        {
-            base.OnDataContextBeginUpdate();
-
-            NotifyDataContextPropertyForAllRowCells(GetAllRows(), true);
-        }
-
-        /// <inheritdoc/>
-        protected override void OnDataContextEndUpdate()
-        {
-            base.OnDataContextEndUpdate();
-
-            NotifyDataContextPropertyForAllRowCells(GetAllRows(), false);
-        }
-
         /// <summary>
         /// Raises the BeginningEdit event.
         /// </summary>
@@ -3280,20 +3260,6 @@ namespace Avalonia.Controls
             }
         }
 
-        private static void NotifyDataContextPropertyForAllRowCells(IEnumerable<DataGridRow> rowSource, bool arg2)
-        {
-            foreach (DataGridRow row in rowSource)
-            {
-                foreach (DataGridCell cell in row.Cells)
-                {
-                    if (cell.Content is StyledElement cellContent)
-                    {
-                        DataContextProperty.Notifying?.Invoke(cellContent, arg2);
-                    }
-                }
-            }
-        }
-
         private void UpdateRowDetailsVisibilityMode(DataGridRowDetailsVisibilityMode newDetailsMode)
         {
             int itemCount = DataConnection.Count;
@@ -4019,42 +3985,14 @@ namespace Avalonia.Controls
             _focusedObject = null;
             if (ContainsFocus)
             {
-                bool focusLeftDataGrid = true;
-                bool dataGridWillReceiveRoutedEvent = true;
-                Visual focusedObject = FocusManager.GetFocusManager(this)?.GetFocusedElement() as Visual;
+                var focusedObject = TopLevel.GetTopLevel(this)?.FocusManager.GetFocusedElement() as Visual;
+                var focusLeftDataGrid = !this.IsVisualAncestorOf(focusedObject);
+
                 DataGridColumn editingColumn = null;
-
-                while (focusedObject != null)
-                {
-                    if (focusedObject == this)
-                    {
-                        focusLeftDataGrid = false;
-                        break;
-                    }
-
-                    // Walk up the visual tree.  If we hit the root, try using the framework element's
-                    // parent.  We do this because Popups behave differently with respect to the visual tree,
-                    // and it could have a parent even if the VisualTreeHelper doesn't find it.
-                    var parent = focusedObject.Parent as Visual;
-                    if (parent == null)
-                    {
-                        parent = focusedObject.GetVisualParent();
-                    }
-                    else
-                    {
-                        dataGridWillReceiveRoutedEvent = false;
-                    }
-                    focusedObject = parent;
-                }
 
                 if (EditingRow != null && EditingColumnIndex != -1)
                 {
                     editingColumn = ColumnsItemsInternal[EditingColumnIndex];
-
-                    if (focusLeftDataGrid && editingColumn is DataGridTemplateColumn)
-                    {
-                        dataGridWillReceiveRoutedEvent = false;
-                    }
                 }
 
                 if (focusLeftDataGrid && !(editingColumn is DataGridTemplateColumn))
@@ -4074,7 +4012,7 @@ namespace Avalonia.Controls
                         }
                     }
                 }
-                else if (!dataGridWillReceiveRoutedEvent)
+                else if (focusLeftDataGrid)
                 {
                     if (focusedObject is Control focusedElement)
                     {
@@ -4169,15 +4107,11 @@ namespace Avalonia.Controls
             // If we're committing, explicitly update the source but watch out for any validation errors
             if (editAction == DataGridEditAction.Commit)
             {
-                void SetValidationStatus(ICellEditBinding binding)
+                void SetValidationStatus(BindingExpressionBase binding)
                 {
-                    if (binding.IsValid)
+                    if (!DataValidationErrors.GetHasErrors(editingElement))
                     {
                         ResetValidationStatus();
-                        if (editingElement != null)
-                        {
-                            DataValidationErrors.ClearErrors(editingElement);
-                        }
                     }
                     else
                     {
@@ -4195,22 +4129,14 @@ namespace Avalonia.Controls
                                 editingRow.ApplyState();
                             }
                         }
-
-                        if (editingElement != null)
-                        {
-                            DataValidationErrors.SetError(editingElement,
-                                new AggregateException(binding.ValidationErrors));
-                        }
                     }
                 }
 
                 var editBinding = CurrentColumn?.CellEditBinding;
-                if (editBinding != null && !editBinding.CommitEdit())
+                if (editBinding != null && DataValidationErrors.GetHasErrors(editingElement))
                 {
+                    editBinding.UpdateSource();
                     SetValidationStatus(editBinding);
-                    _validationSubscription?.Dispose();
-                    _validationSubscription = editBinding.ValidationChanged.Subscribe(v => SetValidationStatus(editBinding));
-
                     ScrollSlotIntoView(CurrentColumnIndex, CurrentSlot, forCurrentCellChange: false, forceHorizontalScroll: true);
                     return false;
                 }
@@ -4923,7 +4849,7 @@ namespace Avalonia.Controls
             if (!ctrl)
             {
                 // If Enter was used by a TextBox, we shouldn't handle the key
-                if (FocusManager.GetFocusManager(this)?.GetFocusedElement() is TextBox focusedTextBox
+                if (TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is TextBox focusedTextBox
                     && focusedTextBox.AcceptsReturn)
                 {
                     return false;
@@ -6128,7 +6054,7 @@ namespace Avalonia.Controls
         /// <returns>The formatted string.</returns>
         private string FormatClipboardContent(DataGridRowClipboardEventArgs e)
         {
-            var text = StringBuilderCache.Acquire();
+            var text = new StringBuilder();
             var clipboardRowContent = e.ClipboardRowContent;
             var numberOfItem = clipboardRowContent.Count;
             for (int cellIndex = 0; cellIndex < numberOfItem; cellIndex++)
@@ -6146,7 +6072,7 @@ namespace Avalonia.Controls
                     text.Append('\n');
                 }
             }
-            return StringBuilderCache.GetStringAndRelease(text);
+            return text.ToString();
         }
 
         /// <summary>
@@ -6161,7 +6087,7 @@ namespace Avalonia.Controls
 
             if (ctrl && !shift && !alt && ClipboardCopyMode != DataGridClipboardCopyMode.None && SelectedItems.Count > 0)
             {
-                var textBuilder = StringBuilderCache.Acquire();
+                var textBuilder = new StringBuilder();
 
                 if (ClipboardCopyMode == DataGridClipboardCopyMode.IncludeHeader)
                 {
@@ -6187,7 +6113,7 @@ namespace Avalonia.Controls
                     textBuilder.Append(FormatClipboardContent(itemArgs));
                 }
 
-                string text = StringBuilderCache.GetStringAndRelease(textBuilder);
+                string text = textBuilder.ToString();
 
                 if (!string.IsNullOrEmpty(text))
                 {
@@ -6243,9 +6169,6 @@ namespace Avalonia.Controls
                 }
             }
             IsValid = true;
-
-            _validationSubscription?.Dispose();
-            _validationSubscription = null;
         }
 
         /// <summary>
