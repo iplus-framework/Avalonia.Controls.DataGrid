@@ -58,7 +58,7 @@ namespace Avalonia.Controls
                                 throw new InvalidOperationException("DataGridColumn doesn't support BindingMode.OneWayToSource. Use BindingMode.TwoWay instead.");
                             }
 
-                            var path = compiled.Path.ToString();
+                            var path = compiled.Path?.ToString();
                             if (!string.IsNullOrEmpty(path) && compiled.Mode == BindingMode.Default)
                             {
                                 compiled.Mode = BindingMode.TwoWay;
@@ -76,7 +76,7 @@ namespace Avalonia.Controls
                                 throw new InvalidOperationException("DataGridColumn doesn't support BindingMode.OneWayToSource. Use BindingMode.TwoWay instead.");
                             }
 
-                            var path = reflection.Path.ToString();
+                            var path = reflection.Path;
                             if (!string.IsNullOrEmpty(path) && reflection.Mode == BindingMode.Default)
                             {
                                 reflection.Mode = BindingMode.TwoWay;
@@ -104,6 +104,8 @@ namespace Avalonia.Controls
         /// The binding that will be used to get or set cell content for the clipboard.
         /// If the base ClipboardContentBinding is not explicitly set, this will return the value of Binding.
         /// </summary>
+        [AssignBinding]
+        [InheritDataTypeFromItems(nameof(DataGrid.ItemsSource), AncestorType = typeof(DataGrid))]
         public override BindingBase ClipboardContentBinding
         {
             get
@@ -140,7 +142,7 @@ namespace Avalonia.Controls
             if (OwningGrid != null && OwningGrid.DataConnection.DataType != null
                 && Header == null && Binding != null && Binding is BindingBase binding)
             {
-                var path = (binding as Binding)?.Path ?? (binding as CompiledBindingExtension)?.Path.ToString();
+                var path = (binding as Binding)?.Path ?? (binding as CompiledBindingExtension)?.Path?.ToString();
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     var header = OwningGrid.DataConnection.DataType.GetDisplayName(path);
