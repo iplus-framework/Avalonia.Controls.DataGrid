@@ -125,7 +125,7 @@ namespace Avalonia.Controls
             Control element = GenerateEditingElementDirect(cell, dataItem);
             editBinding = null; 
 
-            if (Binding != null)
+            if (Binding != null && BindingTarget != null)
             {
                 editBinding = element.Bind(BindingTarget, Binding);
             } 
