@@ -10,7 +10,8 @@
     <!-- Package version follows the Avalonia version the fork is built against (from iPlus/build/Avalonia.Version.props);
          falls back to 12.0.4 when building standalone without the iPlus props. -->
     <AvaloniaVersionLatest Condition="'$(AvaloniaVersionLatest)' == ''">12.0.4</AvaloniaVersionLatest>
-    <Version>$(AvaloniaVersionLatest).$(CIVersionSuffix)</Version>
+    <Version>$(AvaloniaVersionLatest)</Version>
+    <Version Condition="'$(CIVersionSuffix)' != ''">$(AvaloniaVersionLatest)$(CIVersionSuffix)</Version>
     <Authors>iPlus</Authors>
     <Copyright>Copyright 2013-$([System.DateTime]::Now.ToString(`yyyy`)) &#169; The AvaloniaUI Project; iPlus fork modifications</Copyright>
     <PackageProjectUrl>https://avaloniaui.net/?utm_source=nuget&amp;utm_medium=referral&amp;utm_content=project_homepage_link</PackageProjectUrl>
