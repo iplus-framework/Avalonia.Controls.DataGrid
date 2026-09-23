@@ -24,7 +24,6 @@ namespace Avalonia.Collections
 #if !DATAGRID_INTERNAL
     public
 #endif
-
     abstract class DataGridGroupDescription : INotifyPropertyChanged
     {
         public AvaloniaList<object> GroupKeys { get; }

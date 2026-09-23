@@ -107,9 +107,9 @@ namespace Avalonia.Collections
         /// <returns>true if this view supports grouping; otherwise, false.</returns>
         bool CanGroup { get; }
 
-        /// <summary>Gets a collection of <see cref="T:System.ComponentModel.GroupDescription" /> objects that describe how the items in the collection are grouped in the view. </summary>
+        /// <summary>Gets a collection of group descriptions that describe how the items in the collection are grouped in the view. </summary>
         /// <returns>A collection of objects that describe how the items in the collection are grouped in the view. </returns>
-        //ObservableCollection<GroupDescription> GroupDescriptions { get; }
+        AvaloniaList<DataGridGroupDescription> GroupDescriptions { get; }
 
         bool IsGrouping { get; }
         int GroupingDepth { get; }

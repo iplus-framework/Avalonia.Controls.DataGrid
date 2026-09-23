@@ -8,7 +8,7 @@ using Avalonia.Collections;
 namespace Avalonia.Controls
 {
 
-    internal class DataGridRowGroupInfo
+    public class DataGridRowGroupInfo
     {
         public DataGridRowGroupInfo(
             DataGridCollectionViewGroup collectionViewGroup,

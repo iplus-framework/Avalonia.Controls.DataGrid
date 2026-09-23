@@ -136,7 +136,7 @@ namespace Avalonia.Controls
             AddHandler(InputElement.PointerPressedEvent, (s, e) => DataGridRowGroupHeader_PointerPressed(e), handledEventsToo: true);
         }
 
-        internal DataGridRowHeader HeaderCell
+        public DataGridRowHeader HeaderCell
         {
             get
             {
@@ -164,22 +164,22 @@ namespace Avalonia.Controls
             set;
         }
 
-        internal int Level
+        public int Level
         {
             get;
-            set;
+            internal set;
         }
 
-        internal DataGrid OwningGrid
+        public DataGrid OwningGrid
         {
             get;
-            set;
+            internal set;
         }
 
-        internal DataGridRowGroupInfo RowGroupInfo
+        public DataGridRowGroupInfo RowGroupInfo
         {
             get;
-            set;
+            internal set;
         }
 
         internal double TotalIndent
@@ -428,7 +428,7 @@ namespace Avalonia.Controls
             }
         }
 
-        internal void ToggleExpandCollapse(bool isVisible, bool setCurrent)
+        public void ToggleExpandCollapse(bool isVisible, bool setCurrent)
         {
             if (RowGroupInfo.CollectionViewGroup.ItemCount != 0)
             {
