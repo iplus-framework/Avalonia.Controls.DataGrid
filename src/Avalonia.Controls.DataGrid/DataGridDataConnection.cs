@@ -20,7 +20,7 @@ using Avalonia.Controls.Utils;
 
 namespace Avalonia.Controls
 {
-    internal class DataGridDataConnection
+    public class DataGridDataConnection
     {
 
         private int _backupSlotForCurrentChanged;

@@ -119,10 +119,10 @@ namespace Avalonia.Controls
             }
         }
 
-        internal DataGridColumn OwningColumn
+        public DataGridColumn OwningColumn
         {
             get;
-            set;
+            internal set;
         }
         internal DataGrid OwningGrid => OwningColumn?.OwningGrid;
 

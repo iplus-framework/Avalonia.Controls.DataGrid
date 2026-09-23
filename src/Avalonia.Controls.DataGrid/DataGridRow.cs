@@ -320,7 +320,7 @@ namespace Avalonia.Controls
             }
         }
 
-        internal bool IsEditing => OwningGrid != null && OwningGrid.EditingRow == this;
+        public bool IsEditing => OwningGrid != null && OwningGrid.EditingRow == this;
 
         /// <summary>
         /// Layout when template is applied
@@ -411,10 +411,10 @@ namespace Avalonia.Controls
             private set;
         }
 
-        internal int Slot
+        public int Slot
         {
             get;
-            set;
+            internal set;
         }
 
         // Height that the row will eventually end up at after a possible details animation has completed

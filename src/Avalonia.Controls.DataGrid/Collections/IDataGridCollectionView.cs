@@ -179,7 +179,7 @@ namespace Avalonia.Collections
         event EventHandler CurrentChanged;
     }
 
-    internal interface IDataGridEditableCollectionView
+    public interface IDataGridEditableCollectionView
     {
         /// <summary>Gets a value that indicates whether a new item can be added to the collection.</summary>
         /// <returns>true if a new item can be added to the collection; otherwise, false.</returns>

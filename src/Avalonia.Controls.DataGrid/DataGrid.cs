@@ -1568,7 +1568,7 @@ namespace Avalonia.Controls
             private set;
         }
 
-        internal int CurrentColumnIndex
+        public int CurrentColumnIndex
         {
             get
             {
@@ -1581,7 +1581,7 @@ namespace Avalonia.Controls
             }
         }
 
-        internal int CurrentSlot
+        public int CurrentSlot
         {
             get
             {
@@ -1594,7 +1594,7 @@ namespace Avalonia.Controls
             }
         }
 
-        internal DataGridDataConnection DataConnection
+        public DataGridDataConnection DataConnection
         {
             get;
             private set;
@@ -6087,7 +6087,7 @@ namespace Avalonia.Controls
         /// to the Clipboard as text.
         /// </summary>
         /// <returns>Whether or not the DataGrid handled the key press.</returns>
-        private bool ProcessCopyKey(KeyModifiers modifiers)
+        public bool ProcessCopyKey(KeyModifiers modifiers)
         {
             KeyboardHelper.GetMetaKeyState(this, modifiers, out bool ctrl, out bool shift, out bool alt);
 

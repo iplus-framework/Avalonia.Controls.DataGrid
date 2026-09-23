@@ -26,6 +26,38 @@ namespace Avalonia.Controls
         private DataGrid _owningGrid;
 
         /// <summary>
+        /// The currently focused/active checkbox in the column. Exposed as protected so
+        /// derived columns can access it without reflection.
+        /// </summary>
+        protected CheckBox CurrentCheckBox
+        {
+            get { return _currentCheckBox; }
+            set { _currentCheckBox = value; }
+        }
+
+        /// <summary>
+        /// Ensures the column is attached to its owning grid. Exposed as protected so
+        /// derived columns can call it without reflection.
+        /// </summary>
+        /// <returns>true if the column has an owning grid, otherwise false</returns>
+        protected bool EnsureOwningGrid()
+        {
+            if (OwningGrid != null)
+            {
+                if (OwningGrid != _owningGrid)
+                {
+                    _owningGrid = OwningGrid;
+                    _owningGrid.Columns.CollectionChanged += Columns_CollectionChanged;
+                    _owningGrid.CurrentCellChanged += OwningGrid_CurrentCellChanged;
+                    _owningGrid.KeyDown += OwningGrid_KeyDown;
+                    _owningGrid.LoadingRow += OwningGrid_LoadingRow;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Windows.Controls.DataGridCheckBoxColumn" /> class. 
         /// </summary>
         public DataGridCheckBoxColumn()
@@ -256,23 +288,6 @@ namespace Avalonia.Controls
             checkBox.HorizontalAlignment = HorizontalAlignment.Center;
             checkBox.VerticalAlignment = VerticalAlignment.Center;
             DataGridHelper.SyncColumnProperty(this, checkBox, IsThreeStateProperty);
-        }
-
-        private bool EnsureOwningGrid()
-        {
-            if (OwningGrid != null)
-            {
-                if (OwningGrid != _owningGrid)
-                {
-                    _owningGrid = OwningGrid;
-                    _owningGrid.Columns.CollectionChanged += Columns_CollectionChanged;
-                    _owningGrid.CurrentCellChanged += OwningGrid_CurrentCellChanged;
-                    _owningGrid.KeyDown += OwningGrid_KeyDown;
-                    _owningGrid.LoadingRow += OwningGrid_LoadingRow;
-                }
-                return true;
-            }
-            return false;
         }
 
         private void OwningGrid_CurrentCellChanged(object sender, EventArgs e)

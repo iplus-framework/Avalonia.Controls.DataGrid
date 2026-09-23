@@ -27,7 +27,6 @@ namespace Avalonia.Controls
 #endif
     partial class DataGrid
     {
-
         internal bool AreRowBottomGridLinesRequired
         {
             get
@@ -254,7 +253,7 @@ namespace Avalonia.Controls
         /// </summary>
         /// <param name="dataItem">backend data item</param>
         /// <returns>null if the DataSource is null, the provided item in not in the source, or the item is not displayed; otherwise, the associated Row</returns>
-        internal DataGridRow GetRowFromItem(object dataItem)
+        public DataGridRow GetRowFromItem(object dataItem)
         {
             int rowIndex = DataConnection.IndexOf(dataItem);
             if (rowIndex < 0)

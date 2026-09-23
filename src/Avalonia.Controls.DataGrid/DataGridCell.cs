@@ -54,10 +54,10 @@ namespace Avalonia.Controls
             internal set { SetAndRaise(IsValidProperty, ref _isValid, value); }
         }
 
-        internal DataGridColumn OwningColumn
+        public DataGridColumn OwningColumn
         {
             get => _owningColumn;
-            set
+            internal set
             {
                 if (_owningColumn != value)
                 {
@@ -66,13 +66,13 @@ namespace Avalonia.Controls
                 }
             }
         }
-        internal DataGridRow OwningRow
+        public DataGridRow OwningRow
         {
             get;
-            set;
+            internal set;
         }
 
-        internal DataGrid OwningGrid
+        public DataGrid OwningGrid
         {
             get { return OwningRow?.OwningGrid ?? OwningColumn?.OwningGrid; }
         }
@@ -82,12 +82,12 @@ namespace Avalonia.Controls
             get { return _rightGridLine?.Bounds.Width ?? 0; }
         }
 
-        internal int ColumnIndex
+        public int ColumnIndex
         {
             get { return OwningColumn?.Index ?? -1; }
         }
 
-        internal int RowIndex
+        public int RowIndex
         {
             get { return OwningRow?.Index ?? -1; }
         }
@@ -101,7 +101,7 @@ namespace Avalonia.Controls
             }
         }
 
-        private bool IsEdited
+        public bool IsEdited
         {
             get
             {
