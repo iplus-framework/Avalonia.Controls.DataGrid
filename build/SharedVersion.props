@@ -9,19 +9,19 @@
     <Title>iPlus.Avalonia.Controls.DataGrid</Title>
     <!-- Package version follows the Avalonia version the fork is built against (from iPlus/build/Avalonia.Version.props);
          falls back to 12.0.4 when building standalone without the iPlus props. -->
-    <AvaloniaVersionLatest Condition="'$(AvaloniaVersionLatest)' == ''">12.0.4</AvaloniaVersionLatest>
+    <AvaloniaVersionLatest Condition="'$(AvaloniaVersionLatest)' == ''">12.1.3</AvaloniaVersionLatest>
     <Version>$(AvaloniaVersionLatest)</Version>
     <Version Condition="'$(CIVersionSuffix)' != ''">$(AvaloniaVersionLatest)$(CIVersionSuffix)</Version>
     <Authors>iPlus</Authors>
     <Copyright>Copyright 2013-$([System.DateTime]::Now.ToString(`yyyy`)) &#169; The AvaloniaUI Project; iPlus fork modifications</Copyright>
-    <PackageProjectUrl>https://avaloniaui.net/?utm_source=nuget&amp;utm_medium=referral&amp;utm_content=project_homepage_link</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/AvaloniaUI/Avalonia.Controls.DataGrid</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/iplus-framework</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/iplus-framework/Avalonia.Controls.DataGrid</RepositoryUrl>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageDescription>iPlus fork of Avalonia.Controls.DataGrid - the DataGrid control for Avalonia, a cross-platform UI framework for .NET. Based on the AvaloniaUI DataGrid with iPlus-specific modifications.</PackageDescription>
     <PackageTags>avalonia;avaloniaui;datagrid;datagrid;iplus;mvvm;net</PackageTags>
-    <PackageReleaseNotes>https://github.com/AvaloniaUI/Avalonia.Controls.DataGrid/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/iplus-framework/Avalonia.Controls.DataGrid/releases</PackageReleaseNotes>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/avalonia.snk</AssemblyOriginatorKeyFile>
