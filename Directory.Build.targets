@@ -1,0 +1,17 @@
+<Project>
+
+  <!--
+    Workaround for MSB3371: C# DevKit's project-data targets touch
+    "$(IntermediateOutputPath)$(MSBuildProjectFile).lscache.stamp" without
+    creating the directory first. When a Rebuild/Clean (e.g. via
+    iPlus/build/Build-Avalonia.sh) removes the artifacts obj folder, the write
+    fails with "Could not find a part of the path".
+    This target simply ensures the directory exists before the stamp is written.
+  -->
+  <Target Name="_EnsureIntermediateOutputDirForProjectData"
+          BeforeTargets="_WriteProjectDataUserFolder;_MergeProjectDataSlicesUserFolder">
+    <MakeDir Directories="$(IntermediateOutputPath)"
+             Condition="'$(IntermediateOutputPath)' != '' and !Exists('$(IntermediateOutputPath)')" />
+  </Target>
+
+</Project>
