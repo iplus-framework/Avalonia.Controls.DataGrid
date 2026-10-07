@@ -369,6 +369,7 @@ namespace Avalonia.Controls
 
                 return true;
             }
+
             return false;
         }
 
@@ -408,13 +409,17 @@ namespace Avalonia.Controls
                     _originalWidth = _dragColumn.ActualWidth;
                     _originalHorizontalOffset = OwningGrid.HorizontalOffset;
 
+                    // Capture the pointer so we keep receiving PointerMoved/PointerReleased
+                    // while the user drags beyond this header's bounds. Without capture the
+                    // neighboring header receives the moves and the resize stalls immediately.
+                    args.Pointer.Capture(this);
+
                     handled = true;
                 }
             }
         }
 
         //TODO DragEvents
-        //TODO MouseCapture
         internal void OnMouseLeftButtonUp(ref bool handled, PointerEventArgs args, Point mousePosition, Point mousePositionHeaders)
         {
             IsPressed = false;
@@ -464,6 +469,14 @@ namespace Avalonia.Controls
             OnMouseMove_Resize(ref handled, mousePositionHeaders);
 
             OnMouseMove_Reorder(ref handled, mousePosition, mousePositionHeaders);
+
+            // Keep the pointer captured while a resize/reorder drag is in progress, so
+            // moves outside the header bounds are still delivered to this header.
+            if ((_dragMode == DragMode.Resize || _dragMode == DragMode.Reorder)
+                && args.Pointer.Captured != this)
+            {
+                args.Pointer.Capture(this);
+            }
 
             SetDragCursor(mousePosition);
         }
